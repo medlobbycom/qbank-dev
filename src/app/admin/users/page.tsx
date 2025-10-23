@@ -8,7 +8,9 @@ interface User {
    id: number;
    name: string;
    email: string;
-  role: 'USER' | 'ADMIN';
+  role: 'STUDENT' | 'TUTOR' | 'MODERATOR' | 'ADMIN';
+status: 'PENDING' | 'APPROVED' | 'REJECTED';
+
 }
 
 export default function AdminUsersPage() {
@@ -100,6 +102,7 @@ export default function AdminUsersPage() {
            <th className="p-4">Name</th>
            <th className="p-4">Email</th>
            <th className="p-4">Role</th>
+           <th className="p-4">Status</th>
            <th className="p-4">Actions</th>
         </tr>
          </thead>
@@ -112,11 +115,25 @@ export default function AdminUsersPage() {
           <td className="p-4">
              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
             user.role === 'ADMIN' ? 'bg-indigo-200 text-indigo-800' :
-            'bg-gray-200 text-gray-800'
+            'bg-gray-200 text-gray-800' // Default style for STUDENT or other roles
              }`}>
             {user.role}
              </span>
           </td>
+
+                            <td className="p-4">
+                              <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                              user.status === 'APPROVED' ? 'bg-green-200 text-green-800' :
+                              user.status === 'PENDING' ? 'bg-yellow-200 text-yellow-800' :
+                              user.status === 'REJECTED' ? 'bg-red-200 text-red-800' :
+                              'bg-gray-200 text-gray-800'
+                              }`}>
+                              {user.status || 'N/A'}
+                           </span>
+                           </td>
+
+
+
           <td className="p-4 flex gap-4 items-center">
              <Link  
                           href={`/admin/users/edit/${user.id}`}  

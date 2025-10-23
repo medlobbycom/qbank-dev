@@ -8,7 +8,9 @@ import Link from 'next/link';
 interface UserData {
   name: string;
   email: string;
-  role: 'USER' | 'ADMIN';
+
+ role: 'STUDENT' | 'TUTOR' | 'MODERATOR' | 'ADMIN';
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
 }
 
 export default function EditUserPage({ params }: { params: { userId: string } }) {
@@ -113,14 +115,34 @@ export default function EditUserPage({ params }: { params: { userId: string } })
               <label className="block text-sm font-medium dark:text-gray-300">Role</label>
               <select 
                 name="role"
-                value={formData.role ?? 'USER'} 
+                value={formData.role ?? 'STUDENT'}
                 onChange={handleInputChange}
                 className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="USER">USER</option>
+                <option value="STUDENT">STUDENT</option>
+                <option value="TUTOR">TUTOR</option>
+                <option value="MODERATOR">MODERATOR</option>
                 <option value="ADMIN">ADMIN</option>
               </select>
           </div>
           
+ {/* Status */}
+ <div>
+ <label className="block text-sm font-medium dark:text-gray-300">Account Status</label>
+ <select 
+ name="status"
+ value={formData.status ?? 'PENDING'}
+ onChange={handleInputChange}
+ className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500">
+ <option value="PENDING">PENDING</option>
+ <option value="APPROVED">APPROVED</option>
+ <option value="REJECTED">REJECTED</option>
+ </select>
+ </div>
+
+
+
+
+
           <div className="text-sm dark:text-gray-400">
             Note: Password cannot be changed from this form.
           </div>
