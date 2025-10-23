@@ -12,8 +12,9 @@ export default function NewUserPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('USER');
 
+  const [role, setRole] = useState('STUDENT'); // Default to STUDENT
+  const [status, setStatus] = useState('APPROVED'); // Default to APPROVED
   // UI state
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -39,6 +40,7 @@ export default function NewUserPage() {
           email,
           password,
           role,
+          status, // Send the status to the backend
         }),
       });
 
@@ -107,10 +109,26 @@ export default function NewUserPage() {
               <label className="block text-sm font-medium dark:text-gray-300">Role</label>
               <select value={role} onChange={(e) => setRole(e.target.value)}
                 className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500">
-                <option value="USER">USER</option>
+                <option value="STUDENT">STUDENT</option>
+                <option value="TUTOR">TUTOR</option>
+                <option value="MODERATOR">MODERATOR</option>
                 <option value="ADMIN">ADMIN</option>
               </select>
           </div>
+
+
+  {/* Status */}
+  <div>
+  <label className="block text-sm font-medium dark:text-gray-300">Account Status</label>
+  <select value={status} onChange={(e) => setStatus(e.target.value)}
+  className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500">
+  <option value="APPROVED">APPROVED</option>
+  <option value="PENDING">PENDING</option>
+  <option value="REJECTED">REJECTED</option>
+  </select>
+  </div>
+
+
 
           {/* Submit */}
           <div className="pt-4">
