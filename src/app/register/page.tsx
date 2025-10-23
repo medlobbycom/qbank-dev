@@ -46,13 +46,20 @@ export default function RegisterPage() {
         throw new Error(data.message || 'Something went wrong');
       }
 
-      setMessage(`Successfully registered ${data.name || name}! Redirecting to login...`);
-      // --- ADDED REDIRECT ---
-      // Optionally redirect to login after a short delay, or directly to dashboard
-      // For now, let's redirect to login after showing the success message
+ // Set success message
+ setMessage('Registration successful! Your account is now pending admin approval. You will be redirected to the login page.');
+
+ // Redirect to login after a longer delay so the user can read the message
+
+
+
       setTimeout(() => {
-         router.push('/login'); // Redirect to login page after success
-      }, 2000); // 2 second delay
+
+
+
+ router.push('/login'); // Redirect to login page
+ }, 4000); // 4 second delay
+
 
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -149,63 +156,66 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Full Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="mt-1 w-full px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 placeholder-gray-500 border border-white/30 dark:border-gray-700/40 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                  placeholder="John Doe"
-                />
-              </div>
+            {/* Hide form on success, show only message */}
+            {!message && (
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Full Name
+                  </label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="mt-1 w-full px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 placeholder-gray-500 border border-white/30 dark:border-gray-700/40 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                    placeholder="John Doe"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Email address
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 w-full px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 placeholder-gray-500 border border-white/30 dark:border-gray-700/40 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                  placeholder="you@example.com"
-                />
-              </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Email address
+                  </label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="mt-1 w-full px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 placeholder-gray-500 border border-white/30 dark:border-gray-700/40 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                    placeholder="you@example.com"
+                  />
+                </div>
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 w-full px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 placeholder-gray-500 border border-white/30 dark:border-gray-700/40 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                  placeholder="••••••••"
-                />
-              </div>
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="mt-1 w-full px-4 py-2 rounded-lg bg-white/60 dark:bg-gray-800/60 placeholder-gray-500 border border-white/30 dark:border-gray-700/40 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                    placeholder="••••••••"
+                  />
+                </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-indigo-600 shadow hover:scale-[1.01] transition-transform disabled:opacity-60"
-              >
-                {loading ? 'Registering...' : 'Register'}
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 rounded-lg font-semibold text-white bg-gradient-to-r from-cyan-500 to-indigo-600 shadow hover:scale-[1.01] transition-transform disabled:opacity-60"
+                >
+                  {loading ? 'Registering...' : 'Register'}
+                </button>
+              </form>
+            )}
 
             {message && <p className="mt-4 text-center text-sm text-green-500">{message}</p>}
             {error && <p className="mt-4 text-center text-sm text-red-500">{error}</p>}
