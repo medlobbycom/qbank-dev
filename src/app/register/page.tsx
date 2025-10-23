@@ -119,7 +119,7 @@ export default function RegisterPage() {
           </h1>
 
 
-          {/* --- IMAGE ADDED HERE --- */}
+          {/* --- IMAGE ADDED HERE --- 
           <div className="my-8 flex justify-center">
             <Image
               src="/assets/logos/medlobbysuite.png" // Replace with your desired image path
@@ -129,7 +129,7 @@ export default function RegisterPage() {
               className="w-auto h-auto max-w-[300px]"
             />
           </div>
-
+*/}
 
 
           <p className="text-lg text-gray-600 dark:text-gray-300">

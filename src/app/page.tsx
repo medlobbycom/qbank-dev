@@ -76,8 +76,8 @@ export default function LandingPage() {
                  <Image
                     src="/assets/logos/medlobbysuite.png" // Replace with your hero image
                     alt="Medical Education Platform Illustration"
-                    width={500}
-                    height={500}
+                    width={300}
+                    height={300}
                     priority // Load image faster
                     className="w-full h-auto max-w-md lg:max-w-lg rounded-lg shadow-xl"
                  />

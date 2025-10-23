@@ -10,6 +10,7 @@ import {
   LayoutGrid,
   FileText,     // Icon for Mock Tests
   Settings, // <-- ADD THIS
+  BookOpenCheck,
   // Add other admin icons you need here
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
@@ -145,6 +146,18 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               <span>Questions</span>
             </Link>
 
+
+<Link
+  onClick={handleLinkClick}
+  href="/admin/qbanks"
+  className={`${navLinkBase} ${
+    pathname.startsWith('/admin/qbanks') ? activeStyle : inactiveStyle
+  }`}
+>
+  <BookOpenCheck className="h-5 w-5" />
+  <span>Qbanks</span>
+</Link>
+
             <Link
               onClick={handleLinkClick}
               href="/admin/users"
@@ -155,6 +168,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
               <Users className="h-5 w-5" />
               <span>Users</span>
             </Link>
+
+
 
  {/* --- NEW SETTINGS LINK --- */}
    <Link

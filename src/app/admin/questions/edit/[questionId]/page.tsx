@@ -7,6 +7,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface Qbank { id: number; name: string; }
+
+// --- ADD THESE ---
+interface Media { id: number; url: string; }
+interface LearningPoint { id: number; text: string; }
+// --- END ---
+
+
 interface QuestionData {
   text: string;
   options: string[];
@@ -16,6 +23,13 @@ interface QuestionData {
   specialty: string;
   difficulty: string;
   qbankId: number;
+  // --- ADD THESE ---
+  learningPoints: LearningPoint[];
+  references: string[];
+  stemMedia: Media[];
+  explanationMedia: Media[];
+  // --- END ---
+
 }
 
 export default function EditQuestionPage({ params }: { params: { questionId: string } }) {
@@ -27,6 +41,16 @@ export default function EditQuestionPage({ params }: { params: { questionId: str
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+
+  // --- ADD STATE FOR NEW FIELDS ---
+  const [learningPointsString, setLearningPointsString] = useState('');
+  const [referencesString, setReferencesString] = useState('');
+  const [stemMedia, setStemMedia] = useState<Media[]>([]);
+  const [explanationMedia, setExplanationMedia] = useState<Media[]>([]);
+  const [uploadingStem, setUploadingStem] = useState(false);
+  const [uploadingExplanation, setUploadingExplanation] = useState(false);
+  // --- END ---
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -45,7 +69,17 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/qbanks`, { headers: { Authorization: `
         const qbanksData = await qbanksRes.json();
         const questionData = await questionRes.json();
         setQbanks(qbanksData);
-        setFormData(questionData as Partial<QuestionData>);
+
+         setFormData(questionData as QuestionData);
+
+        // --- POPULATE NEW STATE ---
+        setLearningPointsString(questionData.learningPoints?.map((lp: LearningPoint) => lp.text).join('\n') ?? '');
+        setReferencesString(questionData.references?.join('\n') ?? '');
+        setStemMedia(questionData.stemMedia ?? []);
+        setExplanationMedia(questionData.explanationMedia ?? []);
+        // --- END ---
+
+
       } catch (error) {
         // log for debugging and show friendly error
         // eslint-disable-next-line no-console
@@ -89,6 +123,54 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/qbanks`, { headers: { Authorization: `
     setField('correctAnswerIndex', index);
   };
 
+
+  // --- ADD THIS FUNCTION ---
+  const handleFileUpload = async (file: File, type: 'stem' | 'explanation') => {
+    setError('');
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('Not authenticated. Please login.');
+      return;
+    }
+
+    if (type === 'stem') setUploadingStem(true);
+    if (type === 'explanation') setUploadingExplanation(true);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.message || `Upload failed (${response.status})`);
+      }
+
+      const data: Media = await response.json();
+
+      if (type === 'stem') {
+        setStemMedia(prev => [...prev, data]);
+      } else {
+        setExplanationMedia(prev => [...prev, data]);
+      }
+    } catch (err: unknown) {
+      console.error(err);
+      setError(err instanceof Error ? err.message : 'File upload failed');
+    } finally {
+      if (type === 'stem') setUploadingStem(false);
+      if (type === 'explanation') setUploadingExplanation(false);
+    }
+  };
+  // --- END ---
+
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(''); setSuccess('');
@@ -97,7 +179,18 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/qbanks`, { headers: { Authorization: `
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/questions/${questionId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(formData),
+
+        // --- MODIFIED BODY ---
+        body: JSON.stringify({
+          ...formData, // Send all existing form data
+          learningPoints: learningPointsString.split('\n').filter(Boolean), // Send as array
+          references: referencesString.split('\n').filter(Boolean), // Send as array
+          stemMediaIds: stemMedia.map(m => m.id), // Send as array of IDs
+          explanationMediaIds: explanationMedia.map(m => m.id), // Send as array of IDs
+        }),
+        // --- END ---
+
+
       });
       if (!response.ok) throw new Error('Failed to update question');
       setSuccess('Question updated successfully! Redirecting...');
@@ -151,6 +244,33 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/qbanks`, { headers: { Authorization: `
             />
           </div>
 
+
+
+
+
+          {/* --- ADD THIS SECTION --- */}
+          <div>
+            <label className="block text-sm font-medium dark:text-gray-300">Stem Media</label>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              onChange={e => { if (e.target.files?.[0]) handleFileUpload(e.target.files[0], 'stem') }}
+              className="w-full mt-1 text-sm dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            />
+            {uploadingStem && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {stemMedia.map((media) => (
+                <div key={media.id} className="relative">
+                  <img src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${media.url}`} alt="Stem media" className="h-20 w-20 rounded object-cover" />
+                  <button type="button" onClick={() => setStemMedia(prev => prev.filter(m => m.id !== media.id))} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 text-xs leading-none">&times;</button>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* --- END SECTION --- */}
+
+
+
           <div>
             {/* --- UPDATED LABEL TO MATCH 'ADD' PAGE --- */}
             <label className="block text-sm font-medium dark:text-gray-300">Options (Select the correct one)</label>
@@ -180,7 +300,9 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/qbanks`, { headers: { Authorization: `
             </div>
           </div>
 
+          {/* --- MODIFIED THIS SECTION --- */}
           {/* --- STYLED TO MATCH 'ADD' PAGE --- */}
+
           <div>
             <label className="block text-sm font-medium dark:text-gray-300">Explanation</label>
             <textarea
@@ -191,6 +313,46 @@ fetch(`${process.env.NEXT_PUBLIC_API_URL}/qbanks`, { headers: { Authorization: `
               className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium dark:text-gray-300">Explanation Media</label>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              onChange={e => { if (e.target.files?.[0]) handleFileUpload(e.target.files[0], 'explanation') }}
+              className="w-full mt-1 text-sm dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+            />
+            {uploadingExplanation && <p className="text-sm text-gray-500 mt-1">Uploading...</p>}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {explanationMedia.map((media) => (
+                <div key={media.id} className="relative">
+                  <img src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${media.url}`} alt="Explanation media" className="h-20 w-20 rounded object-cover" />
+                  <button type="button" onClick={() => setExplanationMedia(prev => prev.filter(m => m.id !== media.id))} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-4 w-4 text-xs leading-none">&times;</button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium dark:text-gray-300">Learning Points (One per line)</label>
+            <textarea
+              value={learningPointsString} onChange={(e) => setLearningPointsString(e.target.value)} rows={3}
+              placeholder="Ulcerated skin lesions should raise suspicion of malignancy."
+              className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium dark:text-gray-300">References (One per line)</label>
+            <textarea
+              value={referencesString} onChange={(e) => setReferencesString(e.target.value)} rows={3}
+              placeholder="Arasu A, Meah N, Sinclair R. Skin checks in primary care..."
+              className="w-full mt-1 p-2 rounded-md bg-white/50 dark:bg-gray-700/5Code50 border border-gray-300 dark:border-gray-600 focus:ring-indigo-500 focus:border-indigo-500" />
+          </div>
+          {/* --- END MODIFIED SECTION --- */}
+
+
+
+
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* --- STYLED TO MATCH 'ADD' PAGE --- */}
