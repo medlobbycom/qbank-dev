@@ -97,7 +97,7 @@ export default function LandingPage() {
 
     <div className="flex flex-wrap justify-center items-center gap-6">
       {/* Partner 1 */}
-      <a href="https://https://www.amboss.com/" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
+      <a href="https://www.amboss.com/" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
         <Image src="/assets/partners/amboss.png" alt="Partner 1" width={140} height={60} className="object-contain" />
       </a>
 
