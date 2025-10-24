@@ -136,7 +136,7 @@ const recentTickets: Ticket[] = [
 // --- Main Page Component ---
 export default function SupportPage() {
   return (
-    <div className="w-full">
+    <div className="w-full max-w-7xl mx-auto">
       <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-8">
         Support Center
       </h1>
