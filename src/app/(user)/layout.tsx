@@ -106,7 +106,9 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
 
       {/* FIX 1: Wrap sidebar in a div that prevents it from shrinking on desktop */}
-      <div className="flex-shrink-0">
+      {/* THIS IS THE MISSING PIECE --> lg:w-64 */}
+  <div className="lg:w-64 lg:flex-shrink-0">
+
          <MainSidebar
            isOpen={isSidebarOpen}
            onClose={() => setSidebarOpen(false)}
