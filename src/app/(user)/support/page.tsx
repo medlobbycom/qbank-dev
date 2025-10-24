@@ -1,19 +1,22 @@
-'use client'; // This page will have interactive elements
+'use client';
 import React from 'react';
-import { LifeBuoy, CheckCircle, Clock } from 'lucide-react';
+import { CheckCircle, Clock } from 'lucide-react';
 
-// --- Reusable Helper Components ---
+// --- Reusable Helper Components (from your original file) ---
 
-// Card style from settings page
+// Card style like SettingsSection
 const SupportSection = ({
   title,
+  description,
   children,
 }: {
   title: string;
+  description: string;
   children: React.ReactNode;
 }) => (
-  <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl shadow-lg p-6 h-full">
-    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{title}</h2>
+  <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-lg rounded-xl shadow-lg p-6 mb-8">
+    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">{title}</h2>
+    <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">{description}</p>
     <div className="space-y-4">{children}</div>
   </div>
 );
@@ -77,7 +80,7 @@ const FaqItem = ({ q, a }: { q: string; a: string }) => (
   </div>
 );
 
-// Ticket item style (like admin activity feed)
+// Ticket item style
 const TicketItem = ({
   subject,
   status,
@@ -105,16 +108,6 @@ const TicketItem = ({
 };
 
 
-
-// --- Type Definitions ---
-type TicketStatus = 'Solved' | 'Pending';
-type Ticket = {
-  subject: string;
-  status: TicketStatus;
-  time: string;
-};
-
-
 // --- Placeholder Data ---
 const placeholderUser = {
   name: 'Irfan Murtaza',
@@ -127,59 +120,61 @@ const faqs = [
   { q: 'Where can I find my session history?', a: 'Your session history is available on the "Session History" page, accessible from the main sidebar.' },
 ];
 
-const recentTickets: Ticket[] = [
-  { subject: 'Issue with mock exam timer', status: 'Solved', time: '1 day ago' },
-  { subject: 'Question about subscription billing', status: 'Pending', time: '3 hours ago' },
-  { subject: 'Feedback on clinical question #452', status: 'Solved', time: '3 days ago' },
+const recentTickets = [
+  { subject: 'Issue with mock exam timer', status: 'Solved' as const, time: '1 day ago' },
+  { subject: 'Question about subscription billing', status: 'Pending' as const, time: '3 hours ago' },
+  { subject: 'Feedback on clinical question #452', status: 'Solved' as const, time: '3 days ago' },
 ];
 
 // --- Main Page Component ---
 export default function SupportPage() {
   return (
-    <div className="w-full max-w-7xl mx-auto min-w-0">
+    // THIS IS THE FIX: Using the exact same wrapper as the settings page
+    <div className="w-full max-w-4xl mx-auto">
       <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-8">
         Support Center
       </h1>
 
-      {/* Responsive 2-column layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        {/* --- COLUMN 1: FORM & TICKETS --- */}
-        <div className="space-y-8">
-          {/* --- SUBMIT A TICKET --- */}
-          <SupportSection title="Submit a Ticket">
-            <InputField label="Full Name" id="fullName" type="text" defaultValue={placeholderUser.name} disabled />
-            <InputField label="Email Address" id="email" type="email" defaultValue={placeholderUser.email} disabled />
-            <InputField label="Subject" id="subject" type="text" defaultValue="" />
-            <TextareaField label="Message" id="message" />
-            <button className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-              Submit Ticket
-            </button>
-          </SupportSection>
+      {/* --- SUBMIT A TICKET --- */}
+      <SupportSection
+        title="Submit a Ticket"
+        description="We'll get back to you as soon as possible."
+      >
+        <InputField label="Full Name" id="fullName" type="text" defaultValue={placeholderUser.name} disabled />
+        <InputField label="Email Address" id="email" type="email" defaultValue={placeholderUser.email} disabled />
+        <InputField label="Subject" id="subject" type="text" defaultValue="" />
+        <TextareaField label="Message" id="message" />
+        <button className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          Submit Ticket
+        </button>
+      </SupportSection>
 
-          {/* --- RECENT TICKETS --- */}
-          <SupportSection title="Recent Tickets">
-            <ul className="space-y-4">
-              {recentTickets.map((ticket, index) => (
-                <TicketItem
-                  key={index}
-                  subject={ticket.subject}
-                  status={ticket.status}
-                  time={ticket.time}
-                />
-              ))}
-            </ul>
-          </SupportSection>
-        </div>
-
-        {/* --- COLUMN 2: FAQS --- */}
-        <SupportSection title="Frequently Asked Questions">
-          {faqs.map((faq, index) => (
-            <FaqItem key={index} q={faq.q} a={faq.a} />
+      {/* --- RECENT TICKETS --- */}
+      <SupportSection
+        title="Recent Tickets"
+        description="Check the status of your recent support requests."
+      >
+        <ul className="space-y-4">
+          {recentTickets.map((ticket, index) => (
+            <TicketItem
+              key={index}
+              subject={ticket.subject}
+              status={ticket.status}
+              time={ticket.time}
+            />
           ))}
-        </SupportSection>
+        </ul>
+      </SupportSection>
 
-      </div>
+      {/* --- FAQS --- */}
+      <SupportSection
+        title="Frequently Asked Questions"
+        description="Find quick answers to common questions."
+      >
+        {faqs.map((faq, index) => (
+          <FaqItem key={index} q={faq.q} a={faq.a} />
+        ))}
+      </SupportSection>
     </div>
   );
 }
