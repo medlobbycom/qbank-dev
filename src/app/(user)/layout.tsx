@@ -93,7 +93,8 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   
   return (
 
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 lg:flex">
+
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Backdrop for mobile sidebar */}
       {isSidebarOpen && (
         <div 
@@ -105,19 +106,21 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
 
 
-      {/* FIX 1: Wrap sidebar in a div that prevents it from shrinking on desktop */}
-      {/* THIS IS THE MISSING PIECE --> lg:w-64 */}
-  <div className="lg:w-64 lg:flex-shrink-0">
-
-         <MainSidebar
-           isOpen={isSidebarOpen}
-           onClose={() => setSidebarOpen(false)}
-           />
-      </div>
 
 
-      {/* FIX 2: Add min-w-0 to the main content wrapper */}
-       <div className="flex-1 flex flex-col min-w-0">
+
+      {/* 2. Sidebar is now a direct child. No wrapper needed. */}
+       <MainSidebar
+       isOpen={isSidebarOpen}
+       onClose={() => setSidebarOpen(false)}
+         />
+
+      {/* 3. This content div gets a dynamic margin-left to avoid the sticky sidebar */}
+      <div className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${isOpen ? 'lg:ml-80' : 'lg:ml-0'}`}>
+
+
+
+
 
 
         <MainHeader
