@@ -103,16 +103,19 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         ></div>
       )}
 
-      <MainSidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
 
 
+      {/* FIX 1: Wrap sidebar in a div that prevents it from shrinking on desktop */}
+      <div className="flex-shrink-0">
+         <MainSidebar
+           isOpen={isSidebarOpen}
+           onClose={() => setSidebarOpen(false)}
+           />
+      </div>
 
-      {/* Remove min-h-screen to prevent double scrollbar */}
-      <div className="flex-1 flex flex-col min-w-0">
 
+      {/* FIX 2: Add min-w-0 to the main content wrapper */}
+       <div className="flex-1 flex flex-col min-w-0">
 
 
         <MainHeader
