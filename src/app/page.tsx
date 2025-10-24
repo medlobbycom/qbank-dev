@@ -86,22 +86,48 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Trusted By Section */}
-        <section className="py-16 bg-white dark:bg-gray-800/50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-8">
-              Trusted by thousands of medical professionals
-            </h2>
-            {/* Replace with actual partner logos */}
-            <div className="flex flex-wrap justify-center items-center gap-x-8 gap-y-4 opacity-70">
-              <span className="font-bold text-gray-400">Partner A</span>
-              <span className="font-bold text-gray-400">Partner B</span>
-              <span className="font-bold text-gray-400">Partner C</span>
-              <span className="font-bold text-gray-400">Partner D</span>
-              <span className="font-bold text-gray-400">Partner E</span>
-            </div>
-          </div>
-        </section>
+
+
+{/* Trusted By Section */}
+<section className="py-16 bg-white dark:bg-gray-800/50">
+  <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-8">
+      Useful Medical Resources
+    </h2>
+
+    <div className="flex flex-wrap justify-center items-center gap-6">
+      {/* Partner 1 */}
+      <a href="https://https://www.amboss.com/" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
+        <Image src="/assets/partners/amboss.png" alt="Partner 1" width={140} height={60} className="object-contain" />
+      </a>
+
+      {/* Partner 2 */}
+      <a href="https://www.lecturio.com" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
+        <Image src="/assets/partners/lecturio.png" alt="Partner 2" width={140} height={60} className="object-contain" />
+      </a>
+
+      {/* Partner 3 */}
+      <a href="https://www.osmosis.org" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
+        <Image src="/assets/partners/osmosis.png" alt="Partner 3" width={140} height={60} className="object-contain" />
+      </a>
+
+      {/* Partner 4 */}
+      <a href="https://www.bmj.com" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
+        <Image src="/assets/partners/thebmj.png" alt="Partner 4" width={140} height={60} className="object-contain" />
+      </a>
+
+      {/* Partner 5 */}
+      <a href="https://www.ncbi.nlm.nih.gov/books/" target="_blank" rel="noopener noreferrer" className="flex items-center p-2">
+        <Image src="/assets/partners/ncbi.png" alt="Partner 5" width={140} height={60} className="object-contain" />
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+
+
 
         {/* Feature Section (Example) */}
          <section className="py-20">
